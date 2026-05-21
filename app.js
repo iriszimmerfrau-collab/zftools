@@ -195,13 +195,11 @@ async function getFFmpeg() {
   });
 
   const baseCore = 'https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.6/dist/umd';
-  const baseLib = 'https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.10/dist/umd';
 
   await ffmpeg.load({
     coreURL: await toBlobURL(`${baseCore}/ffmpeg-core.js`, 'text/javascript'),
     wasmURL: await toBlobURL(`${baseCore}/ffmpeg-core.wasm`, 'application/wasm'),
     workerURL: await toBlobURL(`${baseCore}/ffmpeg-core.worker.js`, 'text/javascript'),
-    classWorkerURL: await toBlobURL(`${baseLib}/814.ffmpeg.js`, 'text/javascript'),
   });
 
   ffmpegInstance = ffmpeg;
