@@ -178,6 +178,12 @@ function convertImageCanvas(file, format) {
 
 let ffmpegInstance = null;
 
+async function toBlobURL(url, mimeType) {
+  const resp = await fetch(url);
+  const blob = new Blob([await resp.arrayBuffer()], { type: mimeType });
+  return URL.createObjectURL(blob);
+}
+
 async function getFFmpeg() {
   if (ffmpegInstance) return ffmpegInstance;
 
@@ -188,9 +194,14 @@ async function getFFmpeg() {
     console.log('[ffmpeg]', message);
   });
 
+  const baseCore = 'https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.6/dist/umd';
+  const baseLib = 'https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.10/dist/umd';
+
   await ffmpeg.load({
-    coreURL: 'https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.6/dist/umd/ffmpeg-core.js',
-    wasmURL: 'https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.6/dist/umd/ffmpeg-core.wasm',
+    coreURL: await toBlobURL(`${baseCore}/ffmpeg-core.js`, 'text/javascript'),
+    wasmURL: await toBlobURL(`${baseCore}/ffmpeg-core.wasm`, 'application/wasm'),
+    workerURL: await toBlobURL(`${baseCore}/ffmpeg-core.worker.js`, 'text/javascript'),
+    classWorkerURL: await toBlobURL(`${baseLib}/814.ffmpeg.js`, 'text/javascript'),
   });
 
   ffmpegInstance = ffmpeg;
