@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ZF Tools - File Converter & Utilities</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="coi-serviceworker.js"></script>
+</head>
+<body>
+  <header>
+    <div class="logo">ZF<span>Tools</span></div>
+    <nav>
+      <button class="nav-btn active" data-tab="converter">File Converter</button>
+      <button class="nav-btn" data-tab="binary-ascii">Binary &harr; ASCII</button>
+      <button class="nav-btn" data-tab="encryption">Encryption</button>
+    </nav>
+  </header>
+
+  <main>
+    <!-- FILE CONVERTER -->
+    <section id="converter" class="tab-panel active">
+      <h2>File Converter</h2>
+      <p class="subtitle">Convert between media formats — all processing happens in your browser.</p>
+
+      <div class="converter-grid">
+        <div class="drop-zone" id="converter-drop">
+          <input type="file" id="converter-file" hidden>
+          <div class="drop-icon">&#128194;</div>
+          <p>Drag &amp; drop a file here or <button class="link-btn" id="converter-browse">browse</button></p>
+          <p class="file-name" id="converter-filename"></p>
+        </div>
+
+        <div class="convert-options">
+          <label for="output-format">Convert to:</label>
+          <select id="output-format">
+            <optgroup label="Audio">
+              <option value="mp3">MP3</option>
+              <option value="wav">WAV</option>
+              <option value="ogg">OGG</option>
+              <option value="aac">AAC</option>
+              <option value="flac">FLAC</option>
+              <option value="m4a">M4A</option>
+            </optgroup>
+            <optgroup label="Video">
+              <option value="mp4">MP4</option>
+              <option value="webm">WebM</option>
+              <option value="avi">AVI</option>
+              <option value="mkv">MKV</option>
+              <option value="mov">MOV</option>
+              <option value="gif">GIF</option>
+            </optgroup>
+            <optgroup label="Image">
+              <option value="png">PNG</option>
+              <option value="jpg">JPG</option>
+              <option value="webp">WebP</option>
+              <option value="bmp">BMP</option>
+              <option value="ico">ICO</option>
+            </optgroup>
+            <optgroup label="Document">
+              <option value="txt">TXT (text extract)</option>
+              <option value="json">JSON</option>
+              <option value="csv">CSV</option>
+            </optgroup>
+          </select>
+
+          <button class="primary-btn" id="convert-btn" disabled>Convert</button>
+        </div>
+      </div>
+
+      <div class="progress-area hidden" id="converter-progress">
+        <div class="progress-bar"><div class="progress-fill" id="converter-fill"></div></div>
+        <p class="progress-text" id="converter-status">Loading FFmpeg...</p>
+      </div>
+
+      <div class="result-area hidden" id="converter-result">
+        <p>Conversion complete!</p>
+        <a id="converter-download" class="primary-btn download-btn" download>Download File</a>
+      </div>
+    </section>
+
+    <!-- BINARY <-> ASCII -->
+    <section id="binary-ascii" class="tab-panel">
+      <h2>Binary &harr; ASCII Converter</h2>
+      <p class="subtitle">Convert text to binary and back.</p>
+
+      <div class="toggle-row">
+        <button class="toggle-btn active" data-mode="ascii-to-bin">ASCII &rarr; Binary</button>
+        <button class="toggle-btn" data-mode="bin-to-ascii">Binary &rarr; ASCII</button>
+      </div>
+
+      <div class="two-col">
+        <div class="col">
+          <label id="ba-input-label">ASCII Text</label>
+          <textarea id="ba-input" placeholder="Type or paste here..." rows="10"></textarea>
+        </div>
+        <div class="col">
+          <label id="ba-output-label">Binary Output</label>
+          <textarea id="ba-output" readonly rows="10"></textarea>
+        </div>
+      </div>
+
+      <div class="action-row">
+        <button class="primary-btn" id="ba-convert">Convert</button>
+        <button class="secondary-btn" id="ba-copy">Copy Output</button>
+        <button class="secondary-btn" id="ba-swap">Swap &harr;</button>
+        <button class="secondary-btn" id="ba-clear">Clear</button>
+      </div>
+
+      <div class="options-row">
+        <label><input type="checkbox" id="ba-spaces" checked> Space-separated bytes</label>
+        <label>Delimiter: <input type="text" id="ba-delimiter" value=" " maxlength="5" class="small-input"></label>
+      </div>
+    </section>
+
+    <!-- ENCRYPTION -->
+    <section id="encryption" class="tab-panel">
+      <h2>Encryption Tool</h2>
+      <p class="subtitle">Encrypt and decrypt text or files using AES-256-GCM — everything stays in your browser.</p>
+
+      <div class="toggle-row">
+        <button class="toggle-btn active" data-mode="encrypt">Encrypt</button>
+        <button class="toggle-btn" data-mode="decrypt">Decrypt</button>
+      </div>
+
+      <div class="enc-tabs">
+        <button class="enc-tab active" data-target="enc-text">Text</button>
+        <button class="enc-tab" data-target="enc-file">File</button>
+      </div>
+
+      <!-- Text encryption -->
+      <div id="enc-text" class="enc-panel active">
+        <div class="field">
+          <label for="enc-password">Password</label>
+          <div class="password-row">
+            <input type="password" id="enc-password" placeholder="Enter a strong password">
+            <button class="icon-btn" id="toggle-pw" title="Show/hide password">&#128065;</button>
+            <button class="icon-btn" id="gen-pw" title="Generate password">&#127922;</button>
+          </div>
+        </div>
+        <div class="field">
+          <label for="enc-input" id="enc-input-label">Plaintext</label>
+          <textarea id="enc-input" rows="6" placeholder="Enter text to encrypt..."></textarea>
+        </div>
+        <div class="action-row">
+          <button class="primary-btn" id="enc-go">Encrypt</button>
+          <button class="secondary-btn" id="enc-copy">Copy Output</button>
+        </div>
+        <div class="field">
+          <label for="enc-output" id="enc-output-label">Encrypted Output</label>
+          <textarea id="enc-output" rows="6" readonly></textarea>
+        </div>
+      </div>
+
+      <!-- File encryption -->
+      <div id="enc-file" class="enc-panel">
+        <div class="field">
+          <label for="enc-file-password">Password</label>
+          <div class="password-row">
+            <input type="password" id="enc-file-password" placeholder="Enter a strong password">
+            <button class="icon-btn toggle-file-pw" title="Show/hide password">&#128065;</button>
+          </div>
+        </div>
+        <div class="drop-zone" id="enc-file-drop">
+          <input type="file" id="enc-file-input" hidden>
+          <div class="drop-icon">&#128274;</div>
+          <p>Drag &amp; drop a file or <button class="link-btn" id="enc-file-browse">browse</button></p>
+          <p class="file-name" id="enc-file-name"></p>
+        </div>
+        <div class="action-row">
+          <button class="primary-btn" id="enc-file-go" disabled>Encrypt File</button>
+        </div>
+        <div class="result-area hidden" id="enc-file-result">
+          <p id="enc-file-done-text">File encrypted!</p>
+          <a id="enc-file-download" class="primary-btn download-btn" download>Download</a>
+        </div>
+      </div>
+
+      <div class="info-box">
+        <strong>How it works:</strong> Your password is stretched with PBKDF2 (600,000 iterations) then used with AES-256-GCM.
+        All processing is local — nothing leaves your browser.
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>ZF Tools &mdash; 100% client-side. No data leaves your browser.</p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.10/dist/umd/ffmpeg.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
